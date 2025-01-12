@@ -15,7 +15,7 @@ jobs:
       uses: canastro/copy-action@0.0.2
       with:
         # Source file
-        source: 'Valheim Rearm Mod/README.md'
+        source: "Valheim\ Rearm\ Mod/README.md"
         # Target file
         target: README.md
           
