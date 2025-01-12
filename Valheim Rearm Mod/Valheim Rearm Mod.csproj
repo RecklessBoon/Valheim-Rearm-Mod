@@ -59,5 +59,16 @@
     <Compile Include="RearmMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="CHANGELOG.md" />
+    <None Include="manifest.json" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>tar.exe -c -avf ValheimRearmMod.zip -C "$(ProjectDir) " icon.png README.md CHANGELOG.md manifest.json -C "$(TargetDir) " "$(TargetFileName) "</PostBuildEvent>
+  </PropertyGroup>
 </Project>
