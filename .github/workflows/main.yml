@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
-    - name: Copy file
+    - name: 'Copy file'
       # You may pin to the exact commit or the version.
       # uses: canastro/copy-action@7ddff6fc153a2ea2cd0fb88ed9750544c051e399
       uses: canastro/copy-action@0.0.2
       with:
         # Source file
-        source: Valheim Rearm Mod/README.md
+        source: 'Valheim Rearm Mod/README.md'
         # Target file
         target: README.md
           
