@@ -1,7 +1,7 @@
 {
   "name": "Valheim_Rearm_Mod",
   "description": "This is a simple mod that re-equips your left and right items that you had equipped before swimming.",
-  "version_number": "1.0.1",
+  "version_number": "1.0.2",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2202"
   ],

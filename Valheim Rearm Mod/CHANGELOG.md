@@ -1,3 +1,8 @@
+# Version 1.0.2
+- Uses reverse patch to call built-in method for re-equiping items.
+- Patch no longer responsible for caching items.
+- Ensures that patch is only applied to owned Player object.
+
 # Version 1.0.1
 
 - Update documentation for Thunderstore compatibility

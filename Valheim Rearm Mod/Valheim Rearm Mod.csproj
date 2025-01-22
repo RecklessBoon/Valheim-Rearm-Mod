@@ -69,6 +69,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>tar.exe -c -avf ValheimRearmMod.zip -C "$(ProjectDir) " icon.png README.md CHANGELOG.md manifest.json -C "$(TargetDir) " "$(TargetFileName) "</PostBuildEvent>
+    <PostBuildEvent>IF $(ConfigurationName) == Debug (
+  copy "$(TargetDir)\$(TargetName).dll" "C:\Program Files (x86)\Steam\steamapps\common\Valheim\BepInEx\scripts\"
+  copy "$(TargetDir)\$(TargetName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Valheim\BepInEx\scripts\"
+)
+
+IF $(ConfigurationName) == Release (
+  tar.exe -c -avf ValheimRearmMod.zip -C "$(ProjectDir) " icon.png README.md CHANGELOG.md manifest.json -C "$(TargetDir) " "$(TargetFileName) "
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>

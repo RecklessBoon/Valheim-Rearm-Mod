@@ -1,56 +1,67 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using HarmonyLib;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+using System.Runtime.CompilerServices;
 
 namespace Valheim_Rearm_Mod
 {
-    [BepInPlugin("com.github.recklessboon.valheim.rearmmod", "Rearm Mod", "1.0.0")]
+    [BepInPlugin("com.github.recklessboon.valheim.rearmmod", "Rearm Mod", "1.0.2")]
     [BepInProcess("valheim.exe")]
     public class RearmMod : BaseUnityPlugin
     {
+        internal static new ManualLogSource Logger;
         private readonly Harmony harmony = new Harmony("com.github.recklessboon.valheim.rearmmod");
 
         void Awake()
         {
             harmony.PatchAll();
+            Logger = base.Logger;
+        }
+
+        void OnDestroy()
+        {
+            harmony?.UnpatchSelf();
+            Logger = null;
+        }
+
+        [HarmonyPatch(typeof(Humanoid), "ShowHandItems")]
+        class Humanoid_Patch
+        {
+            [HarmonyReversePatch]
+            [HarmonyPatch("ShowHandItems")]
+            public static void ShowHandItems(Humanoid __instance, bool onlyRightHand = false, bool animation = true) => throw new NotImplementedException("This is a stub only");
         }
 
         [HarmonyPatch(typeof(Player), "Update")]
         class Update_Patch
         {
-            static bool wasSwimming = false;
-            static ItemDrop.ItemData rightItem = null;
-            static ItemDrop.ItemData leftItem = null;
+            static bool playerWasSwimming = false;
 
             static void Prefix(Player __instance)
             {
                 try
                 {
-                    if (!wasSwimming && __instance.IsSwimming())
+                    if (__instance.IsOwner())
                     {
-                        Debug.Log("Player is swimming. Caching items.");
-                        rightItem = __instance.RightItem;
-                        leftItem = __instance.LeftItem;
+                        if (!playerWasSwimming && __instance.IsSwimming())
+                        {
+                            playerWasSwimming = true;
+                        }
+                        else if (playerWasSwimming && !__instance.IsSwimming() && __instance.IsOnGround())
+                        {
+                            Humanoid_Patch.ShowHandItems(__instance, false, false);
+                            Logger.LogInfo($"Rearming player after swimming");
+                            playerWasSwimming = false;
+                        }
                     }
-                    else if (wasSwimming && !__instance.IsSwimming())
-                    {
-                        Debug.Log("Player is no longer swimming. Rearming items.");
-                        __instance.EquipItem(rightItem, false);
-                        __instance.EquipItem(leftItem, false);
-                        rightItem = null;
-                        leftItem = null;
-                    }
-                    wasSwimming = __instance.IsSwimming();
                 }
                 catch (System.Exception e)
                 {
-                    Debug.LogError("Error in Rearm Mod: " + e);
+                    Logger.LogError("Error in Rearm Mod: " + e);
                 }
+            }
         }
-    }
-
-
     }
 }
